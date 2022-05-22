@@ -1,9 +1,12 @@
 <template>
-  <div id = "echart-example"></div>
+  <div id = "echart-example">
+    <dialog open id = "dialog-histoire"></dialog>
+  </div>
 </template>
 
 <script>
-import * as echarts from 'echarts'
+import * as echarts from 'echarts';
+import axios from 'axios';
 
 export default {
   name: 'HelloWorld',
@@ -18,29 +21,27 @@ export default {
       div.style.width = `${window.innerWidth * 0.9}px`;
       div.style.height = `${window.innerHeight * 0.9}px`;
       div.style.marginLeft = `${window.innerWidth * 0.05}px`;
-      div.style.position = "relative";
-      var columnBotton = document.createElement('button');
-      div.appendChild(columnBotton);
-      columnBotton.style.backgroundImage = "url('Resources/column_chart.png')";
-      columnBotton.style.backgroundSize = "64px 64px";
-      columnBotton.style.position = "relative";
-      columnBotton.style.top = `${div.style.height * 0.1}px`;
-      columnBotton.style.left = `${div.style.width * 0.1}px`;
-      columnBotton.style.width = "64px";
-      columnBotton.style.height = "64px";
-      columnBotton.style.border = "none";
-      //columnBotton.textContent = "column chart";
-      columnBotton.onclick = this.onclick;
-    },
-    onclick() {
-      console.log("click");
-      var dialog = document.createElement('dialog');
-      dialog.id = "dialog";
-      dialog.style.width = "640px";
-      dialog.style.height = "640px";
-      var div = document.getElementById('echart-example');
-      div.appendChild(dialog);
-      dialog.onclose = this.onclose;
+      var columnButton = document.createElement('button');
+      div.appendChild(columnButton);
+      columnButton.id = "column-button";
+      columnButton.style.backgroundImage = "url('Resources/column_chart.png')";
+      columnButton.style.backgroundSize = "64px 64px";
+      columnButton.style.backgroundColor = "transparent";
+      columnButton.style.position = "absolute";
+      columnButton.style.left = `${div.clientWidth * 0.1}px`;
+      columnButton.style.top = `${div.clientHeight * 0.1}px`;
+      columnButton.style.width = "64px";
+      columnButton.style.height = "64px";
+      columnButton.style.border = "none";
+      columnButton.onclick = this.onClickColumnButton;
+      var dialog_histoire = document.getElementById("dialog-histoire");
+      dialog_histoire.style.width = "512px";
+      dialog_histoire.style.height = "256px";
+      dialog_histoire.style.position = "relative";
+      dialog_histoire.style.marginLeft = "10px";
+      dialog_histoire.style.marginBottom = "10px";
+      dialog_histoire.style.padding = "0";
+      dialog_histoire.style.border = "none";
     },
     onclose() {
       var div = document.getElementById('echart-example');
@@ -48,9 +49,36 @@ export default {
       div.removeChild(dialog);
     },
     onClickColumnButton() {
-      var echart_example = document.getElementById("echart-example");
+      console.log("click");
+      axios.get("https://116.7.234.239:8080/data/test")
+      .then(response => (
+        console.log(`$$$$$$$\n${response.data}`)
+      ))
+      .catch(function (error) { // 请求失败处理
+        console.log(error);
+      })
+      var echart_example = document.getElementById('echart-example');
+      var dialog = document.createElement('dialog');
+      dialog.id = "column-dialog";
+      dialog.style.width = "640px";
+      dialog.style.height = "320px";
+      dialog.style.position = "absulote";
+      dialog.style.left = `${echart_example.clientWidth * 0.1}px`;
+      dialog.style.top = `${echart_example.clientHeight * 0.1}px`;
+      echart_example.appendChild(dialog);
+      dialog.onclose = this.onclose;
+      dialog.open = true;
       var echart1 = document.createElement('div');
-      echart_example.appendChild(echart1);
+      echart1.style.position = "absolute";
+      echart1.style.width = "600px"
+      echart1.style.height = "300px";
+      //echart1.style.top = "50%";
+      //echart1.style.marginTop = `-${150}px`;
+      echart1.style.left = "50%";
+      echart1.style.marginLeft = `-${300}px`;
+      //echart1.style.marginBottom = "20%";
+      echart1.style.bottom = "1%";
+      dialog.appendChild(echart1);
       var myChart = echarts.init(echart1);
       // 绘制图表
       myChart.setOption({
@@ -76,9 +104,11 @@ export default {
     this.initialize();
   },
   update() {
-    var div = document.getElementById('echart-example');
-    div.style.width = `90%`;
-    div.style.height = `90%`;
+      var div = document.getElementById('echart-example'); 
+      div.style.width = `${window.innerWidth * 0.9}px`;
+      div.style.height = `${window.innerHeight * 0.9}px`;
+      div.style.marginLeft = `${window.innerWidth * 0.05}px`;
+      div.style.position = "relative";
   }
 }
 </script>
@@ -98,5 +128,8 @@ li {
 }
 a {
   color: #42b983;
+}
+#echart-example {
+  position: "absolute";
 }
 </style>
