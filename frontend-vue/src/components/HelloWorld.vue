@@ -50,7 +50,7 @@ export default {
     },
     onClickColumnButton() {
       console.log("click");
-      axios.get("http://116.7.234.239:8080/data/test")
+      axios.get("http://localhost:8080/data/test")
       .then(response => (
         console.log(`$$$$$$$\n${response.data}`)
       ))
