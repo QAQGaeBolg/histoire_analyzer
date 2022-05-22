@@ -53,14 +53,15 @@ export class LAppDelegate {
    */
   public initialize(): boolean {
     // キャンバスの作成
-    var div = document.getElementById('app');
+    //var div = document.getElementById('app');
     canvas = document.createElement('canvas');
-    canvas.style.zIndex = "10";
+    var dialog_histoire = document.getElementById('dialog-histoire');
+    dialog_histoire.appendChild(canvas);
     if (LAppDefine.CanvasSize === 'auto') {
       this._resizeCanvas();
     } else {
-      canvas.width = LAppDefine.CanvasSize.width;
-      canvas.height = LAppDefine.CanvasSize.height;
+      canvas.width = dialog_histoire.clientWidth;
+      canvas.height = dialog_histoire.clientHeight;
     }
 
     // glコンテキストを初期化
@@ -79,8 +80,8 @@ export class LAppDelegate {
     }
 
     // キャンバスを DOM に追加
-    div.appendChild(canvas);
-    document.body.appendChild(div);
+    //div.appendChild(canvas);
+    //document.body.appendChild(div);
 
     if (!frameBuffer) {
       frameBuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
@@ -292,8 +293,9 @@ export class LAppDelegate {
    * Resize the canvas to fill the screen.
    */
   private _resizeCanvas(): void {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    var dialog_histoire = document.getElementById('dialog-histoire');
+    canvas.width = dialog_histoire.clientWidth;
+    canvas.height = dialog_histoire.clientHeight;
   }
 
   _cubismOption: Option; // Cubism SDK Option
