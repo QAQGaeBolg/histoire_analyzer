@@ -56,7 +56,11 @@ export class LAppDelegate {
     //var div = document.getElementById('app');
     canvas = document.createElement('canvas');
     var dialog_histoire = document.getElementById('dialog-histoire');
+    console.log(`width = ${dialog_histoire.clientWidth}\nheight = ${dialog_histoire.clientHeight}`)
     dialog_histoire.appendChild(canvas);
+    canvas.style.backgroundSize = "100% 100%";
+    canvas.style.backgroundRepeat = "no-repeat";
+    canvas.style.backgroundAttachment = "fixed";
     if (LAppDefine.CanvasSize === 'auto') {
       this._resizeCanvas();
     } else {
