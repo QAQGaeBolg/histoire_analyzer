@@ -33,7 +33,7 @@ export const ViewLogicalMaxTop = 2.0;
 export const ResourcesPath = '../../Resources/';
 
 // モデルの後ろにある背景の画像ファイル
-export const BackImageName = 'background2.png';
+export const BackImageName = 'background2.1.png';
 
 // 歯車
 export const GearImageName = 'icon_gear.png';
@@ -44,7 +44,7 @@ export const PowerImageName = 'CloseNormal.png';
 // モデル定義---------------------------------------------
 // モデルを配置したディレクトリ名の配列
 // ディレクトリ名とmodel3.jsonの名前を一致させておくこと
-export const ModelDir: string[] = ['Hiyori', 'Histoire'];
+export const ModelDir: string[] = ['Histoire','Hiyori'];
 export const ModelDirSize: number = ModelDir.length;
 
 // 外部定義ファイル（json）と合わせる
