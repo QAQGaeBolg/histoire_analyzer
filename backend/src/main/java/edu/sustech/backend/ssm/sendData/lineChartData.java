@@ -10,8 +10,10 @@ public class lineChartData {
         private List<List<Integer>> popularity = new ArrayList<>();
 
     public lineChartData(){
-            frameworks = new ArrayList<>(Arrays.asList("Spring", "Struts", "Spark", "GWT", "DropWizard"));
-            years = new ArrayList<>(Arrays.asList(2015, 2016, 2017, 2018, 2019, 2020, 2021));
+         frameworks = new ArrayList<>(Arrays.asList(
+                "Spring", "Struts", "Spark", "GWT", "DropWizard", "Blade", "Vaadin",
+                "JHipster", "Tapestry", "Wicket", "Hibernate", "MyBatis"));
+         years = new ArrayList<>(Arrays.asList(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021));
 
         }
 

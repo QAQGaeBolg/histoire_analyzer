@@ -20,7 +20,7 @@ public class github_scraper {
 
     DataBaseController controller = new DataBaseController();
     Gson gson = new Gson();
-    String token = "gfzum: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";
+    String token = "gfzum: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";
 
     public static void main(String[] args) {
         String test = "2021-01-01T00:00:00Z";
@@ -76,6 +76,7 @@ public class github_scraper {
         int total_cnt = 1;
         int limit = (framework.equals("Spring") ? 50000: 20000);
         String created = "2012-01-01T00:00:00Z";
+//        String created = "2019-05-08T00:00:00Z";
         String last = null;
         URL url = null;
         do {
@@ -111,20 +112,26 @@ public class github_scraper {
                     JsonObject result = JsonParser.parseString(content.toString()).getAsJsonObject();
                     total_cnt = result.get("total_count").getAsInt();
 
-                    int page_nums = 0;
+//                    int page_nums = 0;
+                    if (result.get("items").getAsJsonArray().size() == 0) {
+                        created = last;
+                        break;
+                    }
                     for (JsonElement item : result.get("items").getAsJsonArray()) {
                         JRepo repo = gson.fromJson(item, JRepo.class);
                         repo.setFramework(framework);
                         controller.insertRepo(repo);
                         last = repo.getCreated_at();
                         cnt++;
-                        page_nums++;
+//                        page_nums++;
                     }
                     controller.printCnt();
-                    if (page_nums < 100 || i == 10) {
-                        created = last;
-                        break;
-                    }
+                    System.out.println("total: " + total_cnt + " cnt: " + cnt);
+                    System.out.println("next time: " + created );
+//                    if (page_nums < 100 || i == 10) {
+//                        created = last;
+//                        break;
+//                    }
 
                 }catch(Exception e){
                     e.printStackTrace();
@@ -133,7 +140,7 @@ public class github_scraper {
             // scrap by time
             if (framework.equals("Spring")) created = timeAdd(created, 1);
             if (framework.equals("Spark")) created = timeAdd(created, 2);
-        } while((cnt < total_cnt) && (cnt < limit) && (timeCheck(created)));
+        } while( (cnt < limit) && (timeCheck(created)));
     }
 
     //type = 1: Spring, type = 2: Spark

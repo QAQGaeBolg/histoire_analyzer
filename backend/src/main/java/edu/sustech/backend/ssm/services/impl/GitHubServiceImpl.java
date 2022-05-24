@@ -2,28 +2,22 @@ package edu.sustech.backend.ssm.services.impl;
 
 import com.google.gson.Gson;
 import edu.sustech.backend.ssm.dao.GithubDao;
-import edu.sustech.backend.scraper.jsonObj.JRepo;
 import edu.sustech.backend.ssm.pojo.Repo;
-import edu.sustech.backend.ssm.pojo.frameData;
-import edu.sustech.backend.ssm.sendData.columnData;
-import edu.sustech.backend.ssm.sendData.lineChartData;
-import edu.sustech.backend.ssm.sendData.tableData;
+import edu.sustech.backend.ssm.sendData.*;
 import edu.sustech.backend.ssm.services.GitHubService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.constant.DynamicCallSiteDesc;
+import java.util.*;
 
 @Service
 public class GitHubServiceImpl implements GitHubService {
 
     @Autowired
     private GithubDao githubDao;
-    Gson gson = new Gson();
-    Map<Integer, String> frameworkMap;
+    private Gson gson = new Gson();
+    public static Map<Integer, String> frameworkMap;
 
 
     public GitHubServiceImpl(){
@@ -33,25 +27,22 @@ public class GitHubServiceImpl implements GitHubService {
         frameworkMap.put(3, "Spark");
         frameworkMap.put(4, "GWT");
         frameworkMap.put(5, "DropWizard");
-
+        frameworkMap.put(6, "Blade");
+        frameworkMap.put(7, "Vaadin");
+        frameworkMap.put(8, "JHipster");
+        frameworkMap.put(9, "Tapestry");
+        frameworkMap.put(10,"Wicket");
+        frameworkMap.put(11, "Hibernate");
+        frameworkMap.put(12, "MyBatis");
     }
-
-
-//    @Override
-//    public List<frameData> getFrameData(){
-//
-//
-//        return null;
-//    }
 
     @Override
     public String sendLineChart() {
-
         lineChartData result = new lineChartData();
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 12; i++) {
             List<Integer> repoCounts = new ArrayList<>();
-            for (int j = 2015; j <= 2021; j++) {
+            for (int j = 2012; j <= 2021; j++) {
                 repoCounts.add(githubDao.getReposByYearAndFrame(j,i).size());
             }
             result.getPopularity().add(repoCounts);
@@ -73,32 +64,58 @@ public class GitHubServiceImpl implements GitHubService {
     }
 
     @Override
-    public String sendColumn() {
+    public String sendCloud() {
 
-        columnData result = new columnData();
+        List<cloudData> result = new ArrayList<>();
+        for (int i = 1; i <= frameworkMap.size(); i++) {
+            int pop = 0;
+            for (Repo repo : githubDao.getRepoByFrame(i)) {
+                pop += repo.getForks() + repo.getStars();
+            }
+            result.add(new cloudData(frameworkMap.get(i), pop));
+        }
+        return gson.toJson(result);
+    }
 
+    @Override
+    public String sendDynamic() {
+//        List<dynamicData> result = new ArrayList<>();
+        List<List<String>> result = new ArrayList<>();
+        List<String> title = new ArrayList<>(Arrays.asList("Repositories", "Frameworks", "Time"));
+//        result.add(new dynamicData());
+        result.add(title);
+
+//        int[] temp = new int[frameworkMap.size()];
+        List<Integer> frame_repos = new ArrayList<Integer>(Arrays.asList(0,0,0,0,0,0,0,0,0,0,0,0));
+
+        for (int y = 2012; y <= 2022; y++) {
+            for (int m = 1; m <= 12; m++) {
+                if (y == 2022 && m > 4) break;
+                for (int i = 1; i <= frameworkMap.size(); i++) {
+                    frame_repos.set(i - 1, frame_repos.get(i - 1) + githubDao.getReposByTimeAndFrame(y, m, i).size());
+//                    result.add(new dynamicData(String.valueOf(frame_repos.get(i - 1)),
+//                            frameworkMap.get(i), y + "-" + m));
+                    List<String> temp = new ArrayList<>(Arrays.asList(
+                            String.valueOf(frame_repos.get(i - 1)), frameworkMap.get(i), y + "-" + m)
+                    );
+                    result.add(temp);
+                }
+            }
+        }
+        return gson.toJson(result);
+    }
+
+    @Override
+    public String sendPie() {
+        pieData result = new pieData();
         List<Integer> pop = result.getPop();
-        for (int i = 1; i <= 5; i++) {
+
+        for (int i = 1; i <= frameworkMap.size(); i++) {
             for (Repo repo : githubDao.getRepoByFrame(i)) {
                 pop.set(i - 1, pop.get(i - 1) + repo.getStars() + repo.getForks());
             }
         }
 
         return gson.toJson(result);
-    }
-
-    @Override
-    public String sendPie() {
-        return null;
-    }
-
-    @Override
-    public String sendCloud() {
-        return null;
-    }
-
-    @Override
-    public String sendDynamic() {
-        return null;
     }
 }
