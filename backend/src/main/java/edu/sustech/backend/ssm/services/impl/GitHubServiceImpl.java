@@ -115,7 +115,6 @@ public class GitHubServiceImpl implements GitHubService {
                 pop.set(i - 1, pop.get(i - 1) + repo.getStars() + repo.getForks());
             }
         }
-
         return gson.toJson(result);
     }
 }
