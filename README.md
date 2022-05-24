@@ -1,4 +1,4 @@
-# histoire_analyzer
+# Java Framwork Overdose
 
 ## Grouping
 
@@ -83,4 +83,48 @@ Feature：可以选择具体框架图标进入图表中
 github search 访问限制
 
 https://docs.github.com/en/rest/search#about-the-search-api
+
+原本的打算是分别挖掘CSDN、知乎、GitHub和Stack Overflow等平台的关于Java Spring的相关数据。可是遇到了jsoup无法执行JavaScript，我们所访问的网页并不包含我们所需要的div数据，所以CSDN和知乎的数据无法爬取。
+
+![](graph/graph2-1.png)
+
+可以看到这里的document中不存在想要的#app的子元素。
+另一方面，stack overflow有着captcha（全自动区分计算机和人类的图林测试），脚本依然无法访问。
+
+![](graph/graph2-2.png)
+
+所以，我们爬取了再GitHub上的关于Java Spring的相关数据。在GitHub主页搜索“Java Spring”词条，可以搜索到100页每页10份的相关结果。我们爬取这些搜索结果的被浏览量和最后更新日期，从而得到1000份相关数据。
+由于有100页的搜索结果，爬取过程需要访问近似网页100次。为了保证爬虫的礼貌性，我们设置了每次访问后100毫秒的延迟时间。但是这在访问第十次网页的时候还是跳出了HTTP 429的请求过多错误。
+
+![](graph/graph2-3.png)
+
+发现短时间内只能连续访问九次，所以我们又让脚本在每访问九次之后做一个10000毫秒的延迟，也就是十秒。发现还是无法第十次访问网页。所以我们将延迟扩大至60秒，发现能够正常运行，直至第四十六次访问网页，再一次跳出了HTTP 429的错误。为了能够稳定获取数据，我们最后将延迟时间调整至120秒即120000毫秒之后，脚本方能正常运行，得到1000条目标数据。整个脚本运行时间大概在23分钟左右。
+
+我们分别爬取了在GitHub上搜索词条“Java Spring”、“Spring boot”、“Spring MVC”、“Spring Cloud”、“Spring Data”、“Spring Security”和“Spring Batch”。每个词条分别获取1000条相关数据，来存入后端的数据库。
+
+之后，我们尝试通过GET的请求方法，可以一次获取所有的网页信息。并通过设置per_page=100(最多为100)，让我们可以在一次访问中获取100条目标信息。相比之前的每次访问中获取10条数据，效率提高了很多。但是该方法在短时间内多次对网页进行访问，还是会有HTTP 403禁止访问的报错现象。
+
+![](graph/graph2-4.png)
+
+获取的所有数据通过Json格式传输至数据库。
+
+## frontend
+
+The frontend is build based on Vue framework. 
+
+The frontend resource is packed onto an ISS server, thus the website can be browsed 
+on the browser directly and there is no need of running the whole Vue project. 
+
+The interactive mode, some picture resources and all of bgm resources refers to the game 
+*Needy Girl Overdose*. 
+
+The live2d character called Histoire is created artificially by Cubism, who is a character of 
+the game *Hyperdimention Neptunia: Rebirth 3*.
+The basic motion such as breathing and looking at the mouse is involved.
+There is also a demo character model of official.
+
+The implementation of all kinds of charts refers to the echart API.
+
+## acknowedgement
+Official documents including echarts, Cubism, Vue, Spring, MyBatis and other CSDN articles.
 
