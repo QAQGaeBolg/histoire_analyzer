@@ -32,6 +32,9 @@ public class DataBaseController {
         frameworkMap = new HashMap<>();
         frameworkMap.put("Spring", 1);
         frameworkMap.put("Struts", 2);
+        frameworkMap.put("Spark", 3);
+        frameworkMap.put("GWT", 4);
+        frameworkMap.put("DropWizard", 5);
     }
 
     public static void main(String[] args) throws ParseException {

@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.sustech.backend.scraper.jsonObj.JRepo;
-import org.apache.ibatis.annotations.Case;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import java.io.BufferedReader;
@@ -13,21 +12,29 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class github_scraper {
 
     DataBaseController controller = new DataBaseController();
     Gson gson = new Gson();
-    String token = "gfzum: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";
+    String token = "gfzum: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";
 
     public static void main(String[] args) {
-
+        String test = "2021-01-01T00:00:00Z";
+        for (int i = 0; i < 10; i++) {
+            System.out.println(timeAdd(test, 2) );
+            test = timeAdd(test, 2);
+            System.out.println(timeCheck(test));
+        }
     }
 
     public void repoScrapeByStars(String framework){
 
         URL url = null;
-        for (int i = 1; i <= 10; i++) {
+        outer : for (int i = 1; i <= 10; i++) {
             String s = String.format("https://api.github.com/search/repositories" +
                     "?q=" + framework + "+language:java&sort=stars" +
                     "&per_page=100&page=" + i);
@@ -63,24 +70,29 @@ public class github_scraper {
         }
     }
 
-    public void repoScrapeBytime(String framework) {
+    public void repoScrapeByTime(String framework) {
 
         int cnt = 0;
         int total_cnt = 1;
         int limit = (framework.equals("Spring") ? 50000: 20000);
-        String created = "2010-01-01T00:00:00Z";
+        String created = "2012-01-01T00:00:00Z";
         String last = null;
         URL url = null;
         do {
             for (int i = 1; i <= 10; i++) {
                 String s = String.format("https://api.github.com/search/repositories" +
-                        "?q=" + framework + "+language:java&created>" + created +
-                        "&sort=create&order=asc&per_page=100&page=" + i);
+                        "?q=" + framework + "+language:java+created:>" + created +
+                        "&sort=created&order=asc&per_page=100&page=" + i);
                 try {
                     url = new URL(s);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("GET");
 //            conn.setRequestProperty("Accept", "");
+
+                    byte[] encodedAuth = Base64.encodeBase64(token.getBytes(StandardCharsets.UTF_8));
+                    String authHeaderValue = "Basic " + new String(encodedAuth);
+                    conn.setRequestProperty("Authorization", authHeaderValue);
+
                     conn.connect();
 
                     int responseCode = conn.getResponseCode();
@@ -118,7 +130,46 @@ public class github_scraper {
                     e.printStackTrace();
                 }
             }
-//            if (framework == "Spring")
-        } while(cnt < total_cnt || cnt >= limit);
+            // scrap by time
+            if (framework.equals("Spring")) created = timeAdd(created, 1);
+            if (framework.equals("Spark")) created = timeAdd(created, 2);
+        } while((cnt < total_cnt) && (cnt < limit) && (timeCheck(created)));
     }
+
+    //type = 1: Spring, type = 2: Spark
+    private static String timeAdd(String time, int type){
+        String created = "2010-01-01T00:00:00Z";
+        SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date parse = parser.parse(time);
+            int year = parse.getYear() + 1900;
+            int month = parse.getMonth() + 1;
+
+            if (type == 1) month += 3;
+            else month += 6;
+
+            if (month > 12){
+                month -= 12;
+                year += 1;
+            }
+
+
+            String Month = String.valueOf(month);
+            if (Month.length() == 1) Month = "0" + Month;
+            return year + "-" + Month + "-" + "01T00:00:00Z";
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static boolean timeCheck(String time){
+        int year = Integer.parseInt(time.substring(0, 4));
+        int month = Integer.parseInt(time.substring(5,7));
+
+        int date = year * 100 + month;
+        return date <= 202204;
+    }
+
 }
