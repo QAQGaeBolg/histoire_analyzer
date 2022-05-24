@@ -495,6 +495,7 @@ export default {
       span.style.top = "40px";
       dialog.appendChild(span);
 
+
       var echart = document.createElement('div');
       echart.style.position = "absolute";
       echart.style.width = "600px"
@@ -676,7 +677,6 @@ export default {
       if (document.getElementById('word-cloud') !== null) {
         return;
       }
-
       var echart_example = document.getElementById('echart-example');
       this.createDialog(
         echart_example,
@@ -1118,7 +1118,6 @@ export default {
         });
         option && myChart.setOption(option);        
       })
-
     },
     onClickTableButton() {
       if (document.getElementById('table-dialog') !== null) {

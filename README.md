@@ -329,6 +329,7 @@ public class github_scraper {
 
 ## 5 Frontend
 
+<<<<<<< HEAD
 前端搭建使用Vue框架，将使用该框架打包的网页资源放在IIS服务器上，再进行内网穿透，可以在浏览器上
 直接使用公网访问该网页，不需要再运行vue项目。
 
@@ -337,4 +338,3 @@ public class github_scraper {
 SDK提供的样例人物模型。
 
 所有图表的制作使用了echart的API和脚本资源。
-
