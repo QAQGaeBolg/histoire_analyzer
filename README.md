@@ -61,6 +61,7 @@ Feature：可以选择具体框架图标进入图表中
 
 每年活跃度 = 创建仓库数/commit数（月为基本单位） （问题数量 + 回帖数量）
 
+数量级的差异：spring 和 sparks 框架与其他框架不在一个数量级上，另外两者同样相差较远。因而我们在爬取了两者的高stars数仓库后对整体的数据量进行了控制。由于其他框架的仓库数大概在1w条上下，Spring仓库的数目在60w左右，sparks在10w左右，我们对两者分别取了5w和2w条左右的数据。
 
 ### 整合数据库
 
@@ -75,7 +76,7 @@ Feature：可以选择具体框架图标进入图表中
 - Primary
 
 - Primary Key: framework （框架名）
-- Attributes: 
+- Attributes:
 
 ## scrapper
 
