@@ -13,7 +13,7 @@ public class scrap {
 //        gs.repoScrapeByStars("DropWizard");
 
 //        gs.repoScrapeByTime("Spring");
-        for (int i = 3; i <= 12; i++) {
+        for (int i = 12; i >= 1; i--) {
             gs.repoScrapeByTime(GitHubServiceImpl.frameworkMap.get(i));
         }
 
