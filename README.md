@@ -1,19 +1,20 @@
-# Java Web Application Framework Populariy Analysis in Recent Years.
+# Java Framework Overdose
 
-## Intro
+## 1 整体介绍
 
-
-### Topic
+### 1.1 主题
 
 信息化世界的技术总是瞬息万变。作为学习者，我们总得时刻提醒自己注意周边环境的变化：我们正在学的技术是否已经过时？我们正在用的框架是否已经有了更优化的版本？在茫茫的技术海洋中，有哪些才是真正有价值的，值得我们用心领悟的？
 
-基于以上考量，我们试着瞄准 Java 网络开发框架进行了一次探究。为了分析一项技术的生命力，我们试着从开源社区入手，希望通过考察其被用来进行创造的活跃度、以及人们对相关产品的关注度，来实现我们的最终分析。
+基于以上考量，我们试着瞄准 Java 开发框架进行了一次探究。为了分析一项技术的生命力，我们试着从开源社区入手，希望通过考察其被用来进行创造的活跃度、以及人们对相关产品的关注度，来实现我们的最终分析。
 
-于是，本项目针对近年来在 Java Web Application 开发中较为流行的框架，通过爬取开源网站 Github 上的相关仓库信息（仓库stars数量、forks数量、各时间段仓库创建数等），对各个框架在社区中的流行度与活跃度进行了分析比较。经由数据库进行存储和筛选，本项目以多样化的图表的形式呈现了数据分析结果，并提供将各个框架的开源仓库整合在一起的数据库图形接口，以便用户进行整体浏览和检索。
+于是，本项目针对近年来在 Java 开发中较为流行的框架，通过爬取开源网站 Github 上的相关仓库信息（仓库stars数量、forks数量、各时间段仓库创建数等），对各个框架在社区中的流行度与活跃度进行了分析比较。经由数据库进行存储和筛选，本项目以多样化的图表的形式呈现了数据分析结果，并提供将各个框架的开源仓库整合在一起的数据库图形接口，以便用户进行整体浏览。
 
-本项目分析的 Java 框架包括：
+### 1.2 框架内容
 
-Web Application
+本项目中涉及分析到框架包含以下三类十三种：
+
+Web Application Framework
 
 - **Spring**: Enterprise-level Java application framework
 - **Struts**: another MVC framework for enterprise-level Java applications
@@ -25,70 +26,48 @@ Web Application
 
 - **Tapestry**: Component-oriented framework for highly scalable apps
 - **Wicket**: Component-based web application framework for purists
-Database
+
+ORM or Database Manipulation Framework
 
 - **Hibernate**: Object-relational mapping framework for a better database communication
 - **MyBatis**: Persistence framework for easier SQL management
 
-web services
+Web Services Framework
 
 - **Dropwizard**: a high-performance but straightforward Java framework for rapid development of RESTful web services.
 
 
-Ref: https://raygun.com/blog/popular-java-frameworks/
+Reference: https://raygun.com/blog/popular-java-frameworks/
 
-我们主要针对了可以进行完整 **Web Application** 开发的框架进行分析，其他如 `Hibernate`, `MyBatis` 等以 ORM 为核心或主要为数据库操作提供便利的框架，或如 `JSF`, `PrimeFace` 等便利 UI 设计的框架，本项目没有涉及。
 
-### 效果呈现
+### 1.3 效果呈现
 
-![[RFL@{XG15VNFK~~P}JI07%B.png]]
+- 整体流行度表现：饼状图、词云
+- 近十年活跃度表现：折线图、动态增长图
 
-![[Z]H{Q6QN)ELTF_V629YM4TE.png]]
+其中，流行度计算方式为 stars数 + forks数，活跃度表现考察方式为某一时间段中该框架相关仓库创建数量。
 
-![[}ZPU3OSD$~3~VZ$@()1`%]P.png]]
 
-![[[L6PN)XDXRPIQ[MUFEAIM13.png]]
 
-### 项目结构
+### 1.4 技术栈
 
-- Frontend: Vue, ...
-- Backend: SpringMVC + Spring + MyBatis (with SpringBoot)
-- DataBase: MariaDB (on Linux)
-- DataSource: `api.github.com`
-- WebScraper & DataProcess: `Java`
+- 前端: Vue, Cubism
+- 后端: SpringMVC + Spring + MyBatis (with SpringBoot)
+- 数据库: MariaDB (on Linux)
+- 数据来源: https://api.github.com
+- 爬虫与数据处理实现: Java
 
-### 团队分工
+### 1.5 团队分工
 
-- 12011411 吴笑丰：后端、数据库设计、部分数据爬取
+- 12011411 吴笑丰：后端、数据库设计、部分数据爬取与处理
 - 11911109 张倚凡：前端
 - 12012428 沈徐檑 ：数据爬取与处理
 
-### 总体分析
+## 2 后端介绍
 
-- 总流行度：柱状图、词云
-  - 数据：`[[framework1,framework2,...], [num1, num2, num3...]]`, `[{frame1:num1}, {frame2:num2},...]`
-- 十年活跃度变化：动态增长图 / 折线图
-  - 动态图须传数据：`[["popularity", "framework", "date"],[data],[],[]...]`
-  - 折线图须传数据：`name:{framework1, framework2, ...,}, x:{2012, 2013, 2014, ...}, y:{data1, data2, ...} * frameworks`
+后端与爬虫作为 Java 项目的主体，整体使用了 Maven 进行项目管理。后端的具体实现上，采用了 SpringMVC + Spring + MyBatis 的 SSM 整体框架，分别对表现层、业务逻辑层、数据访问层进行了实现。
 
-Feature：可以选择具体框架图标进入图表中
-
-总流行度 = stars数 + forks数 
-
-每年活跃度 = 创建仓库数/commit数（月为基本单位）
-
-
-
-### 整合数据库
-
-将所有框架的仓库整合在一个数据库中，可以点击访问，并进行查询或通过stars、forks、创建时间排序。
-
-
-## Backend 
-
-后端部分使用 Maven 进行项目管理，并采用了 SpringMVC + Spring + MyBatis 的SSM整体框架，分别实现了表现层、业务逻辑层、数据访问层。
-
-### 文件结构
+### 2.1 后端文件结构
 
 ```
 .
@@ -109,15 +88,15 @@ Feature：可以选择具体框架图标进入图表中
 │   └── impl
 │       └── GitHubServiceImpl.java
 └── SsmApplication.java
-
 ```
 
-### Important Classes, Methods and Fields
+### 2.2 重要类、方法介绍
 
 #### MainController
 
-```java
+表现层的实现，在 SpringBoot 和 SpringMVC 的配合下表现得十分简洁。
 
+```java
 @CrossOrigin
 @RestController
 @RequestMapping("/data")
@@ -126,33 +105,50 @@ public class mainController {
   @Autowired
   private GitHubService gitHubService;
 
-  @GetMapping("/{id}")
-  public String getById(@PathVariable Integer id) {
-    System.out.println(id);
-    return "hello!";
-  }
-
   @GetMapping("/line")
-  public String getLineChart() {
-    System.out.println("line");
+  public String getLineChart(){
     return gitHubService.sendLineChart();
   }
-
   @GetMapping("/table")
-  public String getTable() {
-    System.out.println("table");
+  public String getTable(){
     return gitHubService.sendTable();
   }
 
-  @GetMapping("/col")
-  public String getCol() {
-    System.out.println("col");
-    return gitHubService.sendColumn();
+  @GetMapping("/pie")
+  public String getPie(){
+    return gitHubService.sendPie();
+  }
+
+  @GetMapping("/cloud")
+  public String getCloud(){
+    return gitHubService.sendCloud();
+  }
+
+  @GetMapping("/dynamic")
+  public String getDynamic(){
+    return gitHubService.sendDynamic();
   }
 }
 ```
 
-#### Dao
+#### GitHuvService
+
+业务层的接口，将通过 Dao 得到的数据进行业务处理，并返回给表现层。
+
+```java
+@Transactional
+public interface GitHubService {
+    public String sendLineChart();
+    public String sendTable();
+    public String sendCloud();
+    public String sendDynamic();
+    public String sendPie();
+}
+```
+
+#### GithubDao
+
+直接与数据库交互的数据层，采用了 MyBatis 的注解开发模式。
 
 ```java
 @Mapper
@@ -164,23 +160,27 @@ public interface GithubDao {
     @Select("select * from github_repos where create_year=#{year} and frame_id=#{frame}")
     public List<Repo> getReposByYearAndFrame(Integer year, Integer frame);
 
+    @Select("select * from github_repos where create_year=#{year} and create_month = #{month}" +
+            " and frame_id=#{frame}")
+    public List<Repo> getReposByTimeAndFrame(Integer year, Integer month, Integer frame);
+
     @Select("select * from github_repos where create_year=#{year} ")
     public List<Repo> getReposByYear(Integer year);
 
     @Select("select * from github_repos where frame_id=#{frame} ")
     public List<Repo> getRepoByFrame(Integer frmae);
-
 }
 ```
 
-## 数据库设计
+## 3 数据库设计
 
-![](graph/database.png)
+图片
+
+数据量级：
 
 与爬虫的配合：
 
 ```java
-
 public class DataBaseController {
     private DataSource dataSource;
     private int repoCnt = 0;
@@ -221,9 +221,7 @@ public class DataBaseController {
 
 ```
 
-## scrapper
-
-
+## 4 爬虫
 
 利用 Github 提供的 REST API 进行了仓库的数据爬取。在使用时，发现简单的搜索语句只会呈现1000条搜索结果，于是利用了如下请求，采取调整时间的方式进行了更多搜索结果的爬取。
 
@@ -305,8 +303,6 @@ public class github_scraper {
 
 ### 旧思路
 
-
-
 原本的打算是分别挖掘CSDN、知乎、GitHub和Stack Overflow等平台的关于Java Spring的相关数据。可是遇到了jsoup无法执行JavaScript，我们所访问的网页并不包含我们所需要的div数据，所以CSDN和知乎的数据无法爬取。
 
 ![](graph/graph2-1.png)
@@ -331,7 +327,7 @@ public class github_scraper {
 
 获取的所有数据通过Json格式传输至数据库。
 
-## Frontend
+## 5 Frontend
 
 The frontend is build based on Vue framework. 
 
