@@ -29,4 +29,9 @@ public class mainController {
         return gitHubService.sendTable();
     }
 
+    @GetMapping("/col")
+    public String getCol(){
+        System.out.println("col");
+        return gitHubService.sendColumn();
+    }
 }

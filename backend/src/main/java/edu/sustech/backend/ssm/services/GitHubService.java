@@ -10,4 +10,8 @@ public interface GitHubService {
 //    public List<frameData> getFrameData();
     public String sendLineChart();
     public String sendTable();
+    public String sendColumn();
+    public String sendPie();
+    public String sendCloud();
+    public String sendDynamic();
 }
