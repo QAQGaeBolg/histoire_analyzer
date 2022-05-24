@@ -329,21 +329,12 @@ public class github_scraper {
 
 ## 5 Frontend
 
-The frontend is build based on Vue framework. 
+前端搭建使用Vue框架，将使用该框架打包的网页资源放在IIS服务器上，再进行内网穿透，可以在浏览器上
+直接使用公网访问该网页，不需要再运行vue项目。
 
-The frontend resource is packed onto an ISS server, thus the website can be browsed 
-on the browser directly and there is no need of running the whole Vue project. 
+网页的交互方式，部分图片资源和全部音乐资源参考自游戏《主播女孩中毒依赖》。Live2d看板娘包括
+自主创作的任务Histoire，参考自游戏《超次元游戏海王星：重生3》，包含呼吸和盯鼠标动作；以及官方
+SDK提供的样例人物模型。
 
-The interactive mode, some picture resources and all of bgm resources refers to the game 
-*Needy Girl Overdose*. 
-
-The live2d character called Histoire is created artificially by Cubism, who is a character of 
-the game *Hyperdimention Neptunia: Rebirth 3*.
-The basic motion such as breathing and looking at the mouse is involved.
-There is also a demo character model of official.
-
-The implementation of all kinds of charts refers to the echart API.
-
-## acknowedgement
-Official documents including echarts, Cubism, Vue, Spring, MyBatis and other CSDN articles.
+所有图表的制作使用了echart的API和脚本资源。
 
