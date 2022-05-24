@@ -6,7 +6,7 @@
 
 信息化世界的技术总是瞬息万变。作为学习者，我们总得时刻提醒自己注意周边环境的变化：我们正在学的技术是否已经过时？我们正在用的框架是否已经有了更优化的版本？在茫茫的技术海洋中，有哪些才是真正有价值的，值得我们用心领悟的？
 
-基于以上考量，我们试着瞄准 Java 开发框架进行了一次探究。为了分析一项技术的生命力，我们试着从开源社区入手，希望通过考察其被用来进行创造的活跃度、以及人们对相关产品的关注度，来实现我们的最终分析。
+基于以上考量，我们试着瞄准 Java 开发框架进行了一次探究：框架众多，它们的实际流行度究竟如何？想要分析一项技术的生命力，我们试着从开源社区入手，希望通过考察其被用来进行创造的活跃度、以及人们对相关产品的关注度，来实现我们的最终分析。
 
 于是，本项目针对近年来在 Java 开发中较为流行的框架，通过爬取开源网站 Github 上的相关仓库信息（仓库stars数量、forks数量、各时间段仓库创建数等），对各个框架在社区中的流行度与活跃度进行了分析比较。经由数据库进行存储和筛选，本项目以多样化的图表的形式呈现了数据分析结果，并提供将各个框架的开源仓库整合在一起的数据库图形接口，以便用户进行整体浏览。
 
@@ -36,18 +36,21 @@ Web Services Framework
 
 - **Dropwizard**: a high-performance but straightforward Java framework for rapid development of RESTful web services.
 
-
 Reference: https://raygun.com/blog/popular-java-frameworks/
-
 
 ### 1.3 效果呈现
 
 - 整体流行度表现：饼状图、词云
 - 近十年活跃度表现：折线图、动态增长图
+- 数据库窗口表格
 
-其中，流行度计算方式为 stars数 + forks数，活跃度表现考察方式为某一时间段中该框架相关仓库创建数量。
+其中，流行度计算方式为 stars 数 + forks 数，活跃度表现考察方式为某一时间段中该框架相关仓库创建数量。
 
-
+![](graph/pic1.png)
+![](graph/pic2.png)
+![](graph/pic3.png)
+![](graph/pic4.png)
+![](graph/pic5.png)
 
 ### 1.4 技术栈
 
@@ -60,7 +63,7 @@ Reference: https://raygun.com/blog/popular-java-frameworks/
 ### 1.5 团队分工
 
 - 12011411 吴笑丰：后端、数据库设计、数据处理、部分数据爬取
-- 11911109 张倚凡：前端
+- 11911109 张倚凡：前端设计
 - 12012428 沈徐檑：数据爬取
 
 ## 2 后端介绍
@@ -131,9 +134,9 @@ public class mainController {
 }
 ```
 
-#### GitHuvService
+#### GitHubService
 
-业务层的接口，将通过 Dao 得到的数据进行业务处理，并返回给表现层。
+业务层的接口，将通过 Dao 得到的数据进行业务处理，配合图表需要的 json 数据类型，返回结果给表现层。
 
 ```java
 @Transactional
@@ -174,11 +177,15 @@ public interface GithubDao {
 
 ## 3 数据库设计
 
-图片
+![[Pasted image 20220525063022.png|200]]
 
-数据量级：
+### 数据量级
 
-与爬虫的配合：
+虽然直接在 Github 上搜索关键词得到的结果很多，但在实际导入数据时，我们发现由于许多仓库是 fork 的结果，因而存在大量同名现象，我们并没有将这些同名的仓库都导入数据库中。
+
+最后的数据条数为：22,204条
+
+### 数据导入
 
 ```java
 public class DataBaseController {
@@ -218,7 +225,6 @@ public class DataBaseController {
         }
     }
 }
-
 ```
 
 ## 4 爬虫
@@ -327,23 +333,11 @@ public class github_scraper {
 
 获取的所有数据通过Json格式传输至数据库。
 
-## 5 Frontend
+## 5 前端
 
-The frontend is build based on Vue framework. 
+前端搭建使用 Vue 框架，将使用该框架打包的网页资源放在 IIS 服务器上，再进行内网穿透，可以在浏览器上直接使用公网访问该网页，不需要再运行 vue 项目。
 
-The frontend resource is packed onto an ISS server, thus the website can be browsed 
-on the browser directly and there is no need of running the whole Vue project. 
+网页的交互方式，部分图片资源和全部音乐资源参考自游戏《主播女孩中毒依赖》。Live2D 看板娘包括自主创作的人物 Histoire，参考自游戏《超次元游戏海王星：重生3》，包含呼吸和盯鼠标动作；以及官方 SDK 提供的样例人物模型。
 
-The interactive mode, some picture resources and all of bgm resources refers to the game 
-*Needy Girl Overdose*. 
-
-The live2d character called Histoire is created artificially by Cubism, who is a character of 
-the game *Hyperdimention Neptunia: Rebirth 3*.
-The basic motion such as breathing and looking at the mouse is involved.
-There is also a demo character model of official.
-
-The implementation of all kinds of charts refers to the echart API.
-
-## acknowedgement
-Official documents including echarts, Cubism, Vue, Spring, MyBatis and other CSDN articles.
+所有图表的制作使用了 echart 的 API 和脚本资源。
 

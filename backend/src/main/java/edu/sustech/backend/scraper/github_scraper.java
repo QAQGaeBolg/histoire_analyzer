@@ -20,7 +20,7 @@ public class github_scraper {
 
     DataBaseController controller = new DataBaseController();
     Gson gson = new Gson();
-    String token = "gfzum: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";
+    String token = "gfzum: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";
 
     public static void main(String[] args) {
         String test = "2021-01-01T00:00:00Z";
@@ -159,7 +159,6 @@ public class github_scraper {
                 month -= 12;
                 year += 1;
             }
-
 
             String Month = String.valueOf(month);
             if (Month.length() == 1) Month = "0" + Month;
