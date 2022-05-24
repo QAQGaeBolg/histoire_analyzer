@@ -29,9 +29,21 @@ public class mainController {
         return gitHubService.sendTable();
     }
 
-    @GetMapping("/col")
-    public String getCol(){
-        System.out.println("col");
-        return gitHubService.sendColumn();
+    @GetMapping("/pie")
+    public String getPie(){
+        System.out.println("pie");
+        return gitHubService.sendPie();
+    }
+
+    @GetMapping("/cloud")
+    public String getCloud(){
+        System.out.println("cloud");
+        return gitHubService.sendCloud();
+    }
+
+    @GetMapping("/dynamic")
+    public String getDynamic(){
+        System.out.println("dyn");
+        return gitHubService.sendDynamic();
     }
 }

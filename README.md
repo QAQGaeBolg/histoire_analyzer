@@ -1,88 +1,307 @@
-# Java Framwork Overdose
+# Java Framework Overdose
 
-## Grouping
+## 1 整体介绍
 
-## Intro
+### 1.1 主题
 
-### Topic
+信息化世界的技术总是瞬息万变。作为学习者，我们总得时刻提醒自己注意周边环境的变化：我们正在学的技术是否已经过时？我们正在用的框架是否已经有了更优化的版本？在茫茫的技术海洋中，有哪些才是真正有价值的，值得我们用心领悟的？
 
-十年来 Java 各大应用框架流行度分析
+基于以上考量，我们试着瞄准 Java 开发框架进行了一次探究。为了分析一项技术的生命力，我们试着从开源社区入手，希望通过考察其被用来进行创造的活跃度、以及人们对相关产品的关注度，来实现我们的最终分析。
 
-涉及到的框架：
+于是，本项目针对近年来在 Java 开发中较为流行的框架，通过爬取开源网站 Github 上的相关仓库信息（仓库stars数量、forks数量、各时间段仓库创建数等），对各个框架在社区中的流行度与活跃度进行了分析比较。经由数据库进行存储和筛选，本项目以多样化的图表的形式呈现了数据分析结果，并提供将各个框架的开源仓库整合在一起的数据库图形接口，以便用户进行整体浏览。
 
-web applications framework
+### 1.2 框架内容
+
+本项目中涉及分析到框架包含以下三类十三种：
+
+Web Application Framework
 
 - **Spring**: Enterprise-level Java application framework
 - **Struts**: another MVC framework for enterprise-level Java applications
-
-
-- **Grails**: Groovy-based web application framework
-- **Play**: Reactive web & mobile framework for highly scalable Java applications
+- **Apache Spark**: Micro framework for web apps and REST APIs
 - **GWT(Google Web Toolkit)**: client-side Java apps deployed as JavaScript
 - **Blade**:  Simple application framework with a minimal footprint
 - **Vaadin**: Web application framework with a focus on UX, accessibility, and mobile
 - **JHipster**: Web apps and microservices with Spring Boot and Angular/React
-- **Vert.x**: Polyglot event-driven application framework for the Java Virtual Machine
-- **Tapestry**: Component-oriented framework for highly scalable apps
-- **Apache Spark**: Micro framework for web apps and REST APIs
 
+- **Tapestry**: Component-oriented framework for highly scalable apps
 - **Wicket**: Component-based web application framework for purists
 
-Microservices ?  web ?
-
-Ref: https://raygun.com/blog/popular-java-frameworks/
-
-Database
+ORM or Database Manipulation Framework
 
 - **Hibernate**: Object-relational mapping framework for a better database communication
 - **MyBatis**: Persistence framework for easier SQL management
 
-web services
+Web Services Framework
 
 - **Dropwizard**: a high-performance but straightforward Java framework for rapid development of RESTful web services.
 
-building user interfaces
 
-- **JSF (Java Server Faces)**: Component-based UI framework
+Reference: https://raygun.com/blog/popular-java-frameworks/
 
-- **PrimeFaces**: UI framework for Jakarta EE and Jakarta Server Faces
 
-### 总体分析
+### 1.3 效果呈现
 
-- 总流行度：柱状图、词云
-  - 数据：`[[framework1,framework2,...], [num1, num2, num3...]]`, `[{frame1:num1}, {frame2:num2},...]`
-- 十年活跃度变化：动态增长图 / 折线图
-  - 动态图须传数据：`[["popularity", "framework", "date"],[data],[],[]...]`
-  - 折线图须传数据：`name:{framework1, framework2, ...,}, x:{2012, 2013, 2014, ...}, y:{data1, data2, ...} * frameworks`
+- 整体流行度表现：饼状图、词云
+- 近十年活跃度表现：折线图、动态增长图
 
-Feature：可以选择具体框架图标进入图表中
+其中，流行度计算方式为 stars数 + forks数，活跃度表现考察方式为某一时间段中该框架相关仓库创建数量。
 
-总流行度 = stars数 + forks数 + （问题数量 + 回帖数量）
 
-每年活跃度 = 创建仓库数/commit数（月为基本单位） （问题数量 + 回帖数量）
 
-数量级的差异：spring 和 sparks 框架与其他框架不在一个数量级上，另外两者同样相差较远。因而我们在爬取了两者的高stars数仓库后对整体的数据量进行了控制。由于其他框架的仓库数大概在1w条上下，Spring仓库的数目在60w左右，sparks在10w左右，我们对两者分别取了5w和2w条左右的数据。
+### 1.4 技术栈
 
-### 整合数据库
+- 前端: Vue, Cubism
+- 后端: SpringMVC + Spring + MyBatis (with SpringBoot)
+- 数据库: MariaDB (on Linux)
+- 数据来源: https://api.github.com
+- 爬虫与数据处理实现: Java
 
-将所有框架的仓库整合在一个数据库中，可以点击访问，并进行查询或通过stars、forks、创建时间排序。
+### 1.5 团队分工
 
-爬数据进入数据库，每次打开都从数据库里取以呈现画面。点击按钮可以继续爬？
+- 12011411 吴笑丰：后端、数据库设计、数据处理、部分数据爬取
+- 11911109 张倚凡：前端
+- 12012428 沈徐檑：数据爬取
 
-## 数据库设计
+## 2 后端介绍
 
-框架库：frameworks
+后端与爬虫作为 Java 项目的主体，整体使用了 Maven 进行项目管理。后端的具体实现上，采用了 SpringMVC + Spring + MyBatis 的 SSM 整体框架，分别对表现层、业务逻辑层、数据访问层进行了实现。
 
-- Primary
+### 2.1 后端文件结构
 
-- Primary Key: framework （框架名）
-- Attributes:
+```
+.
+├── controller
+│   └── mainController.java
+├── dao
+│   └── GithubDao.java
+├── pojo
+│   └── Repo.java
+├── sendData
+│   ├── cloudData.java
+│   ├── dynamicData.java
+│   ├── lineChartData.java
+│   ├── pieData.java
+│   └── tableData.java
+├── services
+│   ├── GitHubService.java
+│   └── impl
+│       └── GitHubServiceImpl.java
+└── SsmApplication.java
+```
 
-## scrapper
+### 2.2 重要类、方法介绍
 
-github search 访问限制
+#### MainController
 
-https://docs.github.com/en/rest/search#about-the-search-api
+表现层的实现，在 SpringBoot 和 SpringMVC 的配合下表现得十分简洁。
+
+```java
+@CrossOrigin
+@RestController
+@RequestMapping("/data")
+public class mainController {
+
+  @Autowired
+  private GitHubService gitHubService;
+
+  @GetMapping("/line")
+  public String getLineChart(){
+    return gitHubService.sendLineChart();
+  }
+  @GetMapping("/table")
+  public String getTable(){
+    return gitHubService.sendTable();
+  }
+
+  @GetMapping("/pie")
+  public String getPie(){
+    return gitHubService.sendPie();
+  }
+
+  @GetMapping("/cloud")
+  public String getCloud(){
+    return gitHubService.sendCloud();
+  }
+
+  @GetMapping("/dynamic")
+  public String getDynamic(){
+    return gitHubService.sendDynamic();
+  }
+}
+```
+
+#### GitHuvService
+
+业务层的接口，将通过 Dao 得到的数据进行业务处理，并返回给表现层。
+
+```java
+@Transactional
+public interface GitHubService {
+    public String sendLineChart();
+    public String sendTable();
+    public String sendCloud();
+    public String sendDynamic();
+    public String sendPie();
+}
+```
+
+#### GithubDao
+
+直接与数据库交互的数据层，采用了 MyBatis 的注解开发模式。
+
+```java
+@Mapper
+public interface GithubDao {
+
+    @Select("select * from github_repos")
+    public List<Repo> getAllRepos();
+
+    @Select("select * from github_repos where create_year=#{year} and frame_id=#{frame}")
+    public List<Repo> getReposByYearAndFrame(Integer year, Integer frame);
+
+    @Select("select * from github_repos where create_year=#{year} and create_month = #{month}" +
+            " and frame_id=#{frame}")
+    public List<Repo> getReposByTimeAndFrame(Integer year, Integer month, Integer frame);
+
+    @Select("select * from github_repos where create_year=#{year} ")
+    public List<Repo> getReposByYear(Integer year);
+
+    @Select("select * from github_repos where frame_id=#{frame} ")
+    public List<Repo> getRepoByFrame(Integer frmae);
+}
+```
+
+## 3 数据库设计
+
+图片
+
+数据量级：
+
+与爬虫的配合：
+
+```java
+public class DataBaseController {
+    private DataSource dataSource;
+    private int repoCnt = 0;
+    private Map<String ,Integer> frameworkMap;
+
+    //...
+    
+    public void insertRepo(JRepo repo) {
+        try (Connection connec = dataSource.getConnection()) {
+
+            String sql = "insert into github_repos (repo_name, full_name, url, stars, forks, create_year, create_month, updated_date, description, frame_id) " +
+                    "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement pstm = connec.prepareStatement(sql);
+            pstm.setString(1, repo.getName());
+            pstm.setString(2, repo.getFull_name());
+            pstm.setString(3, repo.getHtml_url());
+            pstm.setInt(4, repo.getStargazers_count());
+            pstm.setInt(5, repo.getForks_count());
+            String create_date = repo.getCreated_at();
+            String update_date = repo.getUpdated_at();
+            pstm.setInt(6, Integer.parseInt(dateConvert(create_date).substring(0,4)));
+            pstm.setInt(7, Integer.parseInt(dateConvert(create_date).substring(5)));
+            pstm.setString(8, dateConvert(update_date));
+            String description = repo.getDescription();
+            if (description != null && description.length() >= 100)
+                description = description.substring(0,100);
+            pstm.setString(9, description);
+            pstm.setInt(10, frameworkMap.get(repo.getFramework()));
+
+            pstm.execute();
+            repoCnt++;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+}
+
+```
+
+## 4 爬虫
+
+利用 Github 提供的 REST API 进行了仓库的数据爬取。在使用时，发现简单的搜索语句只会呈现1000条搜索结果，于是利用了如下请求，采取调整时间的方式进行了更多搜索结果的爬取。
+
+```
+https://api.github.com/search/repositories?q=framework_name+language:java+created:>created_time&sort=created&order=asc&per_page=100&page=i
+```
+
+github search 访问限制：https://docs.github.com/en/rest/search#about-the-search-api
+
+方法参考：https://stackoverflow.com/questions/37602893/github-search-limit-results
+
+另外，对于大部分框架来说，使用关键词搜索（匹配仓库名、标签及描述）后的的仓库数量大致在10k条上下。但是对于 Spring 和 Spark 两者来说，他们与其他框架不在一个数量级上，前者的仓库数目在600k左右，后者在100k左右。考虑到爬取的时间，以及数据库的存储容量等问题，我们在爬取了两者的高stars数仓库后，对整体的数据量进行了控制。我们保证 Spring 仓库的数量不超过50k，Spark 的仓库量不超过20k。
+
+```java
+public class github_scraper {
+    
+    //...
+  
+  public void repoScrapeByTime(String framework) {
+
+    int cnt = 0;
+    int total_cnt = 1;
+    int limit = (framework.equals("Spring") ? 50000: 20000);
+    String created = "2012-01-01T00:00:00Z";
+    String last = null;
+    URL url = null;
+    do {
+      for (int i = 1; i <= 10; i++) {
+        String s = String.format("https://api.github.com/search/repositories" +
+                "?q=" + framework + "+language:java+created:>" + created +
+                "&sort=created&order=asc&per_page=100&page=" + i);
+        try {
+          url = new URL(s);
+          HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+          conn.setRequestMethod("GET");
+
+          byte[] encodedAuth = Base64.encodeBase64(token.getBytes(StandardCharsets.UTF_8));
+          String authHeaderValue = "Basic " + new String(encodedAuth);
+          conn.setRequestProperty("Authorization", authHeaderValue);
+
+          conn.connect();
+
+          StringBuilder content = new StringBuilder("");
+          BufferedReader bi = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+          String line = null;
+          while ((line = bi.readLine()) != null) {
+            content.append(line);
+          }
+
+          JsonObject result = JsonParser.parseString(content.toString()).getAsJsonObject();
+          total_cnt = result.get("total_count").getAsInt();
+
+          if (result.get("items").getAsJsonArray().size() == 0) {
+            created = last;
+            break;
+          }
+          for (JsonElement item : result.get("items").getAsJsonArray()) {
+            JRepo repo = gson.fromJson(item, JRepo.class);
+            repo.setFramework(framework);
+            controller.insertRepo(repo);
+            last = repo.getCreated_at();
+            cnt++;
+          }
+          controller.printCnt();
+          System.out.println("total: " + total_cnt + " cnt: " + cnt);
+          System.out.println("next time: " + created );
+
+        }catch(Exception e){
+          e.printStackTrace();
+        }
+      }
+      // scrap by time
+      if (framework.equals("Spring")) created = timeAdd(created, 1);
+      if (framework.equals("Spark")) created = timeAdd(created, 2);
+    } while( (cnt < limit) && (timeCheck(created)));
+  }
+}
+```
+
+### 旧思路
 
 原本的打算是分别挖掘CSDN、知乎、GitHub和Stack Overflow等平台的关于Java Spring的相关数据。可是遇到了jsoup无法执行JavaScript，我们所访问的网页并不包含我们所需要的div数据，所以CSDN和知乎的数据无法爬取。
 
@@ -108,7 +327,7 @@ https://docs.github.com/en/rest/search#about-the-search-api
 
 获取的所有数据通过Json格式传输至数据库。
 
-## frontend
+## 5 Frontend
 
 The frontend is build based on Vue framework. 
 
