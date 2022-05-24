@@ -9,4 +9,5 @@ import java.util.List;
 public interface GitHubService {
 //    public List<frameData> getFrameData();
     public String sendLineChart();
+    public String sendTable();
 }
