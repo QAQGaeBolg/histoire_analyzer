@@ -169,11 +169,11 @@ export default {
       var div = document.getElementById('echart-example');
       this.createButton(
         div, 
-        "column-button", 
-        "Resources/column_chart.png", 
+        "pie-button", 
+        "Resources/pie_chart.png", 
         `${div.clientWidth * 0.05}px`,
         `${div.clientHeight * 0.05}px`,
-        this.onClickColumnButton
+        this.onClickPieButton
       );
       this.createButton(
         div, 
@@ -185,11 +185,11 @@ export default {
       );
       this.createButton(
         div, 
-        "pie-chart", 
-        "Resources/pie_chart.png", 
+        "data-table", 
+        "Resources/data_table.png", 
         `${div.clientWidth * 0.05}px`,
         `${div.clientHeight * 0.15 + 128}px`,
-        this.onClickColumnButton
+        this.onClickTableButton
       );
       this.createButton(
         div, 
@@ -206,14 +206,6 @@ export default {
         `${div.clientWidth * 0.05}px`,
         `${div.clientHeight * 0.25 + 256}px`,
         this.onClickDynamicButton
-      );
-      this.createButton(
-        div, 
-        "data-table", 
-        "Resources/data_table.png", 
-        `${div.clientWidth * 0.1 + 64}px`,
-        `${div.clientHeight * 0.05}px`,
-        this.onClickTableButton
       );
     },
     setMovement(element, dom) {
@@ -333,22 +325,22 @@ export default {
         dialog.remove();
       }
     },
-    onClickColumnButton() {
-      if (document.getElementById('column-dialog') !== null) {
+    onClickPieButton() {
+      if (document.getElementById('pie-dialog') !== null) {
         return;
       }
 
       var echart_example = document.getElementById('echart-example');
       this.createDialog(
         echart_example,
-        "column-dialog",
+        "pie-dialog",
         `${echart_example.clientWidth * 0.1}px`,
         `${echart_example.clientHeight * 0.1}px`,
         640,
         "400px",
-        "Column Chart"
+        "Pie Chart"
       );
-      var dialog = document.getElementById("column-dialog");
+      var dialog = document.getElementById("pie-dialog");
 
       var echart = document.createElement('div');
       echart.style.position = "absolute";
@@ -359,71 +351,126 @@ export default {
       dialog.appendChild(echart);
       var myChart = echarts.init(echart);
 
-      axios.get("http://10.25.204.52:8080/data/col")
+      axios.get("http://10.25.204.52:8080/data/pie")
       .then(response => {
+        var result = response.data;
+        var data = {legendData: [], seriesData: []};
+        data.legendData = result.framework;
+        for (let i = 0; i < data.legendData.length; i++) {
+          data.seriesData.push({name: data.legendData[i], value: Math.round(result.pop[i])})
+        }
         // 绘制图表
         myChart.setOption({
           title: {
-            text: 'World Population'
+            text: 'Framework Popularity',
+            left: 'center'
           },
           tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'shadow'
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {}
             }
           },
-          legend: {},
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          xAxis: {
-            type: 'value',
-            boundaryGap: [0, 0.01]
-          },
-          yAxis: {
-            type: 'category',
-            data: response.data.framework
+          legend: {
+            type: 'scroll',
+            orient: 'vertical',
+            right: 10,
+            top: 20,
+            bottom: 20,
+            data: data.legendData
           },
           series: [
             {
-              name: 'Stars',
-              type: 'bar',
-              data: [18203, 23489, 29034, 104970, 131744, 630230]
-            },
-            {
-              name: 'Forks',
-              type: 'bar',
-              data: [19325, 23438, 31000, 121594, 134141, 681807]
+              name: '姓名',
+              type: 'pie',
+              radius: '55%',
+              center: ['40%', '50%'],
+              data: data.seriesData,
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
             }
           ]
         });
       })
       .catch(function (error) { // 请求失败处理
         console.log(error);
+        const data = genData(50);
+        function genData(count) {
+          // prettier-ignore
+          const nameList = [
+                '赵', '钱', '孙', '李', '周', '吴', '郑', '王', '冯', '陈', '褚', '卫', '蒋', '沈', '韩', '杨', '朱', '秦', '尤', '许', '何', '吕', '施', '张', '孔', '曹', '严', '华', '金', '魏', '陶', '姜', '戚', '谢', '邹', '喻', '柏', '水', '窦', '章', '云', '苏', '潘', '葛', '奚', '范', '彭', '郎', '鲁', '韦', '昌', '马', '苗', '凤', '花', '方', '俞', '任', '袁', '柳', '酆', '鲍', '史', '唐', '费', '廉', '岑', '薛', '雷', '贺', '倪', '汤', '滕', '殷', '罗', '毕', '郝', '邬', '安', '常', '乐', '于', '时', '傅', '皮', '卞', '齐', '康', '伍', '余', '元', '卜', '顾', '孟', '平', '黄', '和', '穆', '萧', '尹', '姚', '邵', '湛', '汪', '祁', '毛', '禹', '狄', '米', '贝', '明', '臧', '计', '伏', '成', '戴', '谈', '宋', '茅', '庞', '熊', '纪', '舒', '屈', '项', '祝', '董', '梁', '杜', '阮', '蓝', '闵', '席', '季', '麻', '强', '贾', '路', '娄', '危'
+            ];
+          const legendData = [];
+          const seriesData = [];
+          for (var i = 0; i < count; i++) {
+            var name =
+              Math.random() > 0.65
+                ? makeWord(4, 1) + '·' + makeWord(3, 0)
+                : makeWord(2, 1);
+            legendData.push(name);
+            seriesData.push({
+              name: name,
+              value: Math.round(Math.random() * 100000)
+            });
+          }
+          return {
+            legendData: legendData,
+            seriesData: seriesData
+          };
+          function makeWord(max, min) {
+            const nameLen = Math.ceil(Math.random() * max + min);
+            const name = [];
+            for (var i = 0; i < nameLen; i++) {
+              name.push(nameList[Math.round(Math.random() * nameList.length - 1)]);
+            }
+            return name.join('');
+          }
+        }
         // 绘制图表
         myChart.setOption({
           title: {
-            text: 'ECharts 入门示例'
+            text: '同名数量统计',
+            subtext: '纯属虚构',
+            left: 'center'
           },
-          tooltip: {},
-          xAxis: {
-            data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
           },
-          yAxis: {},
+          legend: {
+            type: 'scroll',
+            orient: 'vertical',
+            right: 10,
+            top: 20,
+            bottom: 20,
+            data: data.legendData
+          },
           series: [
             {
-              name: '销量',
-              type: 'bar',
-              data: [5, 20, 36, 10, 10, 20]
+              name: '姓名',
+              type: 'pie',
+              radius: '55%',
+              center: ['40%', '50%'],
+              data: data.seriesData,
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
             }
           ]
         });        
       })
-
-
     },
     onClickLineButton() {
       if (document.getElementById('line-dialog') !== null) {
@@ -440,6 +487,13 @@ export default {
         "Line Chart"
       );
       var dialog = document.getElementById("line-dialog");
+      var span = document.createElement('span');
+      span.textContent = "Framework Repos Line Chart";
+      span.style.fontSize = "25px";
+      span.style.position = "absolute";
+      span.style.left = "50px";
+      span.style.top = "40px";
+      dialog.appendChild(span);
 
       var echart = document.createElement('div');
       echart.style.position = "absolute";
@@ -458,7 +512,8 @@ export default {
         // 绘制图表
         myChart.setOption({
           title: {
-            text: 'Stacked Line'
+            text: 'Framework Repo Line',
+            top: '-10%'
           },
           tooltip: {
             trigger: 'axis'
@@ -489,14 +544,64 @@ export default {
             {
               name: frameworks[0],
               type: 'line',
-              stack: 'Total',
               data: popularity[0]
             },
             {
               name: frameworks[1],
               type: 'line',
-              stack: 'Total',
               data: popularity[1]
+            },
+            {
+              name: frameworks[2],
+              type: 'line',
+              data: popularity[2]
+            },
+            {
+              name: frameworks[3],
+              type: 'line',
+              stack: 'Total',
+              data: popularity[3]
+            },
+            {
+              name: frameworks[4],
+              type: 'line',
+              data: popularity[4]
+            },
+            {
+              name: frameworks[5],
+              type: 'line',
+              stack: 'Total',
+              data: popularity[5]
+            },
+            {
+              name: frameworks[6],
+              type: 'line',
+              data: popularity[6]
+            },
+            {
+              name: frameworks[7],
+              type: 'line',
+              data: popularity[7]
+            },
+            {
+              name: frameworks[8],
+              type: 'line',
+              data: popularity[8]
+            },
+            {
+              name: frameworks[9],
+              type: 'line',
+              data: popularity[9]
+            },
+            {
+              name: frameworks[10],
+              type: 'line',
+              data: popularity[10]
+            },
+            {
+              name: frameworks[11],
+              type: 'line',
+              data: popularity[11]
             }
           ]
         });
@@ -567,85 +672,11 @@ export default {
         })
       });
     },
-    onClickPieButton() {
-      if (document.getElementById('pie-dialog') !== null) {
-        return;
-      }
-      axios.get("http://10.25.204.52:8080/data/test")
-      .then(response => (
-        console.log(`$$$$$$$\n${response.data.stars}`)
-      ))
-      .catch(function (error) { // 请求失败处理
-        console.log(error);
-      })
-      var echart_example = document.getElementById('echart-example');
-      this.createDialog(
-        echart_example,
-        "pie-dialog",
-        `${echart_example.clientWidth * 0.1}px`,
-        `${echart_example.clientHeight * 0.1}px`,
-        640,
-        "400px",
-        "Pie Chart"
-      );
-      var dialog = document.getElementById("pie-dialog");
-
-      var echart = document.createElement('div');
-      echart.style.position = "absolute";
-      echart.style.width = "600px"
-      echart.style.height = "300px";
-      echart.style.left = "5%";
-      echart.style.bottom = "5%";
-      dialog.appendChild(echart);
-      var myChart = echarts.init(echart);
-      // 绘制图表
-      myChart.setOption({
-        title: {
-          text: 'Referer of a Website',
-          subtext: 'Fake Data',
-          left: 'center'
-        },
-        tooltip: {
-          trigger: 'item'
-        },
-        legend: {
-          orient: 'vertical',
-          left: 'left'
-        },
-        series: [
-          {
-            name: 'Access From',
-            type: 'pie',
-            radius: '50%',
-            data: [
-              { value: 1048, name: 'Search Engine' },
-              { value: 735, name: 'Direct' },
-              { value: 580, name: 'Email' },
-              { value: 484, name: 'Union Ads' },
-              { value: 300, name: 'Video Ads' }
-            ],
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            }
-          }
-        ]
-      });
-    },
     onClickWordCloud() {
       if (document.getElementById('word-cloud') !== null) {
         return;
       }
-      axios.get("http://10.25.204.52:8080/data/test")
-      .then(response => (
-        console.log(`$$$$$$$\n${response.data.stars}`)
-      ))
-      .catch(function (error) { // 请求失败处理
-        console.log(error);
-      })
+
       var echart_example = document.getElementById('echart-example');
       this.createDialog(
         echart_example,
@@ -666,62 +697,112 @@ export default {
       echart.style.top = "50px";
       dialog.appendChild(echart);
       var myChart = echarts.init(echart);
-      var keywords = [{"name":"男神","value":2.64},
-                      {"name":"好身材","value":4.03},
-                      {"name":"校草","value":24.95},
-                      {"name":"酷","value":4.04},
-                      {"name":"时尚","value":5.27},
-                      {"name":"阳光活力","value":5.80},
-                      {"name":"初恋","value":3.09},
-                      {"name":"英俊潇洒","value":24.71},
-                      {"name":"霸气","value":6.33},
-                      {"name":"腼腆","value":2.55},
-                      {"name":"蠢萌","value":3.88},
-                      {"name":"青春","value":8.04},
-                      {"name":"网红","value":5.87},
-                      {"name":"萌","value":6.97},
-                      {"name":"认真","value":2.53},
-                      {"name":"古典","value":2.49},
-                      {"name":"温柔","value":3.91},
-                      {"name":"有个性","value":3.25},
-                      {"name":"可爱","value":9.93},
-                      {"name":"幽默诙谐","value":3.65}]
-      myChart.setOption({
-        series: [{
-            type: 'wordCloud',
-            //maskImage: maskImage,
-            sizeRange: [15, 80],
-            rotationRange: [0, 0],
-            rotationStep: 45,
-            gridSize: 8,
-            shape: 'pentagon',
-            width: '100%',
-            height: '100%',
-              textStyle: {
-                normal: {
-                    color: function () {
-                        return 'rgb(' + [
-                            Math.round(Math.random() * 160),
-                            Math.round(Math.random() * 160),
-                            Math.round(Math.random() * 160)
-                        ].join(',') + ')';
-                    },
-                    fontFamily: 'sans-serif',
-                    fontWeight: 'normal'
-                },
-                emphasis: {
-                    shadowBlur: 10,
-                    shadowColor: '#333'
-                }
-            },
-            data: keywords
-        }]
-      });
+
+      axios.get("http://10.25.204.52:8080/data/cloud")
+      .then(response => {
+        var keywords = [];
+        var result = response.data;
+        for (let i = 0; i < result.length; i++) {
+          keywords.push({"name": result[i].framework, "value": result[i].pop});
+        }
+        myChart.setOption({
+          toolbox: {
+            feature: {
+              saveAsImage: {}
+            }
+          },
+          series: [{
+              type: 'wordCloud',
+              //maskImage: maskImage,
+              sizeRange: [15, 80],
+              rotationRange: [0, 0],
+              rotationStep: 45,
+              gridSize: 8,
+              shape: 'pentagon',
+              width: '100%',
+              height: '100%',
+                textStyle: {
+                  normal: {
+                      color: function () {
+                          return 'rgb(' + [
+                              Math.round(Math.random() * 160),
+                              Math.round(Math.random() * 160),
+                              Math.round(Math.random() * 160)
+                          ].join(',') + ')';
+                      },
+                      fontFamily: 'sans-serif',
+                      fontWeight: 'normal'
+                  },
+                  emphasis: {
+                      shadowBlur: 10,
+                      shadowColor: '#333'
+                  }
+              },
+              data: keywords
+          }]
+        });
+      })
+      .catch(function (error) { // 请求失败处理
+        console.log(error);
+        var keywords = [{"name":"男神","value":2.64},
+                        {"name":"好身材","value":4.03},
+                        {"name":"校草","value":24.95},
+                        {"name":"酷","value":4.04},
+                        {"name":"时尚","value":5.27},
+                        {"name":"阳光活力","value":5.80},
+                        {"name":"初恋","value":3.09},
+                        {"name":"英俊潇洒","value":24.71},
+                        {"name":"霸气","value":6.33},
+                        {"name":"腼腆","value":2.55},
+                        {"name":"蠢萌","value":3.88},
+                        {"name":"青春","value":8.04},
+                        {"name":"网红","value":5.87},
+                        {"name":"萌","value":6.97},
+                        {"name":"认真","value":2.53},
+                        {"name":"古典","value":2.49},
+                        {"name":"温柔","value":3.91},
+                        {"name":"有个性","value":3.25},
+                        {"name":"可爱","value":9.93},
+                        {"name":"幽默诙谐","value":3.65}];
+        myChart.setOption({
+          series: [{
+              type: 'wordCloud',
+              //maskImage: maskImage,
+              sizeRange: [15, 80],
+              rotationRange: [0, 0],
+              rotationStep: 45,
+              gridSize: 8,
+              shape: 'pentagon',
+              width: '100%',
+              height: '100%',
+                textStyle: {
+                  normal: {
+                      color: function () {
+                          return 'rgb(' + [
+                              Math.round(Math.random() * 160),
+                              Math.round(Math.random() * 160),
+                              Math.round(Math.random() * 160)
+                          ].join(',') + ')';
+                      },
+                      fontFamily: 'sans-serif',
+                      fontWeight: 'normal'
+                  },
+                  emphasis: {
+                      shadowBlur: 10,
+                      shadowColor: '#333'
+                  }
+              },
+              data: keywords
+          }]
+        });        
+      })
     },
     onClickDynamicButton() {
       if (document.getElementById('dynamic-column') !== null) {
         return;
       }
+      var audio = document.getElementById("audio1");
+      audio.src = "BGM/bgm10.mp3";
       var echart_example = document.getElementById('echart-example');
       this.createDialog(
         echart_example,
@@ -734,6 +815,11 @@ export default {
       );
 
       var dialog = document.getElementById("dynamic-column");
+      var button = dialog.getElementsByTagName('button')[0];
+      button.onclick = () => {
+        audio.src = "BGM/bgm3.mp3";
+        dialog.remove();
+      }
 
       var echart = document.createElement('div');
       echart.style.position = "absolute";
@@ -748,8 +834,22 @@ export default {
         'https://fastly.jsdelivr.net/gh/apache/echarts-website@asf-site/examples';
       var option;
 
-      const updateFrequency = 2000;
+      const updateFrequency = 500;
       const dimension = 0;
+      const frameworkColors = {
+        Spring: '#00008b',
+        Struts: '#ffe400',
+        Spark: '#ff00e4',
+        GWT: '#18ff00',
+        DropWizard: '#ff0000',
+        Blade: '#00eaff',
+        Vaadin: '#ff5a00',
+        JHipster: '#JHipster',
+        Tapestry: '#ff0090',
+        Wicket: '#000000',
+        Hibernate: '#868586',
+        MyBatis: '#4aa1f9'
+      };
       const countryColors = {
         Australia: '#00008b',
         Canada: '#f00',
@@ -771,29 +871,16 @@ export default {
         'United Kingdom': '#00247d',
         'United States': '#b22234'
       };
-      $.when(
-        $.getJSON('https://fastly.jsdelivr.net/npm/emoji-flags@1.3.0/data.json'),
-        $.getJSON(ROOT_PATH + '/data/asset/data/life-expectancy-table.json')
-      ).done(function (res0, res1) {
-        const flags = res0[0];
-        const data = res1[0];
-        const years = [];
-        for (let i = 0; i < data.length; ++i) {
-          if (years.length === 0 || years[years.length - 1] !== data[i][4]) {
-            years.push(data[i][4]);
+      axios.get("http://10.25.204.52:8080/data/dynamic")
+      .then(response => {
+        var result = response.data;
+        var years = [];
+        for (let i = 0; i < result.length; ++i) {
+          if (years.length === 0 || years[years.length - 1] !== result[i][2]) {
+            years.push(result[i][2]);
           }
         }
-        function getFlag(countryName) {
-          if (!countryName) {
-            return '';
-          }
-          return (
-            flags.find(function (item) {
-              return item.name === countryName;
-            }) || {}
-          ).emoji;
-        }
-        let startIndex = 10;
+        let startIndex = 1;
         let startYear = years[startIndex];
         option = {
           grid: {
@@ -801,6 +888,11 @@ export default {
             bottom: 30,
             left: 150,
             right: 80
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {}
+            }
           },
           xAxis: {
             max: 'dataMax',
@@ -811,8 +903,8 @@ export default {
             }
           },
           dataset: {
-            source: data.slice(1).filter(function (d) {
-              return d[4] === startYear;
+            source: result.slice(1).filter(function (d) {
+              return d[2] === startYear;
             })
           },
           yAxis: {
@@ -823,7 +915,7 @@ export default {
               show: true,
               fontSize: 14,
               formatter: function (value) {
-                return value + '{flag|' + getFlag(value) + '}';
+                return value;
               },
               rich: {
                 flag: {
@@ -842,7 +934,7 @@ export default {
               type: 'bar',
               itemStyle: {
                 color: function (param) {
-                  return countryColors[param.value[3]] || '#5470c6';
+                  return frameworkColors[param.value[1]] || '#5470c6';
                 }
               },
               encode: {
@@ -879,7 +971,6 @@ export default {
             ]
           }
         };
-        // console.log(option);
         myChart.setOption(option);
         for (let i = startIndex; i < years.length - 1; ++i) {
           (function (i) {
@@ -889,22 +980,153 @@ export default {
           })(i);
         }
         function updateYear(year) {
-          let source = data.slice(1).filter(function (d) {
-            return d[4] === year;
+          let source = result.slice(1).filter(function (d) {
+            return d[2] === year;
           });
           option.series[0].data = source;
           option.graphic.elements[0].style.text = year;
           myChart.setOption(option);
         }
-      });
-      option && myChart.setOption(option);
+        option && myChart.setOption(option);    
+      }).catch(function (error) {
+        console.log(error);
+        $.when(
+          $.getJSON('https://fastly.jsdelivr.net/npm/emoji-flags@1.3.0/data.json'),
+          $.getJSON(ROOT_PATH + '/data/asset/data/life-expectancy-table.json')
+        ).done(function (res0, res1) {
+          const flags = res0[0];
+          const data = res1[0];
+          const years = [];
+          for (let i = 0; i < data.length; ++i) {
+            if (years.length === 0 || years[years.length - 1] !== data[i][4]) {
+              years.push(data[i][4]);
+            }
+          }
+          function getFlag(countryName) {
+            if (!countryName) {
+              return '';
+            }
+            return (
+              flags.find(function (item) {
+                return item.name === countryName;
+              }) || {}
+            ).emoji;
+          }
+          let startIndex = 10;
+          let startYear = years[startIndex];
+          option = {
+            grid: {
+              top: 10,
+              bottom: 30,
+              left: 150,
+              right: 80
+            },
+            xAxis: {
+              max: 'dataMax',
+              axisLabel: {
+                formatter: function (n) {
+                  return Math.round(n) + '';
+                }
+              }
+            },
+            dataset: {
+              source: data.slice(1).filter(function (d) {
+                return d[4] === startYear;
+              })
+            },
+            yAxis: {
+              type: 'category',
+              inverse: true,
+              max: 10,
+              axisLabel: {
+                show: true,
+                fontSize: 14,
+                formatter: function (value) {
+                  return value + '{flag|' + getFlag(value) + '}';
+                },
+                rich: {
+                  flag: {
+                    fontSize: 25,
+                    padding: 5
+                  }
+                }
+              },
+              animationDuration: 300,
+              animationDurationUpdate: 300
+            },
+            series: [
+              {
+                realtimeSort: true,
+                seriesLayoutBy: 'column',
+                type: 'bar',
+                itemStyle: {
+                  color: function (param) {
+                    return countryColors[param.value[3]] || '#5470c6';
+                  }
+                },
+                encode: {
+                  x: dimension,
+                  y: 3
+                },
+                label: {
+                  show: true,
+                  precision: 1,
+                  position: 'right',
+                  valueAnimation: true,
+                  fontFamily: 'monospace'
+                }
+              }
+            ],
+            // Disable init animation.
+            animationDuration: 0,
+            animationDurationUpdate: updateFrequency,
+            animationEasing: 'linear',
+            animationEasingUpdate: 'linear',
+            graphic: {
+              elements: [
+                {
+                  type: 'text',
+                  right: 160,
+                  bottom: 60,
+                  style: {
+                    text: startYear,
+                    font: 'bolder 80px monospace',
+                    fill: 'rgba(100, 100, 100, 0.25)'
+                  },
+                  z: 100
+                }
+              ]
+            }
+          };
+          // console.log(option);
+          myChart.setOption(option);
+          for (let i = startIndex; i < years.length - 1; ++i) {
+            (function (i) {
+              setTimeout(function () {
+                updateYear(years[i + 1]);
+              }, (i - startIndex) * updateFrequency);
+            })(i);
+          }
+          function updateYear(year) {
+            let source = data.slice(1).filter(function (d) {
+              return d[4] === year;
+            });
+            option.series[0].data = source;
+            option.graphic.elements[0].style.text = year;
+            myChart.setOption(option);
+          }
+        });
+        option && myChart.setOption(option);        
+      })
+
     },
     onClickTableButton() {
       if (document.getElementById('table-dialog') !== null) {
         return;
       }
       let _this = this;
-
+      var audio = document.getElementById("audio1");
+      audio.src = "BGM/bgm8.mp3";
       function setTr(parent, backgroundColor, width, text, fontSize, textColor, url) {
         var td = document.createElement('td');
         td.style.backgroundColor = backgroundColor;
@@ -1017,19 +1239,24 @@ export default {
         "table-dialog",
         `${echart_example.clientWidth * 0.1}px`,
         `${echart_example.clientHeight * 0.1}px`,
-        640,
+        740,
         "400px",
         "Repository Table"
       );
       var dialog = document.getElementById("table-dialog");
-      dialog.style.overflow = "auto";
+      var button = dialog.getElementsByTagName('button')[0];
+      button.onclick = () => {
+        audio.src = "BGM/bgm5.mp3";
+        dialog.remove();
+      }
 
       var echart = document.createElement('div');
       echart.style.position = "absolute";
-      echart.style.width = "600px";
-      echart.style.height = "300px";
-      echart.style.left = "2%";
-      echart.style.top = "25px";
+      echart.style.width = "740px";
+      echart.style.height = "380px";
+      echart.style.left = "0px";
+      echart.style.top = "20px";
+      echart.style.overflow = "auto";
       dialog.appendChild(echart);
 
       var table = document.createElement('table');
@@ -1037,21 +1264,20 @@ export default {
       echart.appendChild(table);
       var tr = document.createElement('tr');
       table.appendChild(tr);
-      setTr(table, "#b8ecfb", "250px", "Repositories", "25px", "#000000", null);
-      setTr(table, "#b8ecfb", "75px", "Stars", "25px", "#000000", null);
+      setTr(table, "#b8ecfb", "375px", "Repositories", "25px", "#000000", null);
+      setTr(table, "#b8ecfb", "80px", "Stars", "25px", "#000000", null);
       setTr(table, "#b8ecfb", "75px", "Forks", "25px", "#000000", null);
       setTr(table, "#b8ecfb", "100px", "Date", "25px", "#000000", null);
       setTr(table, "#b8ecfb", "100px", "Update", "25px", "#000000", null);
 
       axios.get("http://10.25.204.52:8080/data/table")
       .then(response => {
-        console.log(`$$$$$$$\n${response.data}`)
         var data = response.data;
         for (var i = 0; i < data.length; i++) {
           tr = document.createElement('tr');
           table.append(tr);
-          setTr(table, "#d7f4ff", "250px", data[i].repoName, "20px", "#000000", data[i].url);
-          setTr(table, "#d7f4ff", "75px", data[i].stars, "20px", "#000000", null);
+          setTr(table, "#d7f4ff", "375px", data[i].repoName, "20px", "#000000", data[i].url);
+          setTr(table, "#d7f4ff", "80px", data[i].stars, "20px", "#000000", null);
           setTr(table, "#d7f4ff", "75px", data[i].forks, "20px", "#000000", null);
           setTr(table, "#d7f4ff", "100px", data[i].create_date, "20px", "#000000", null);
           setTr(table, "#d7f4ff", "100px", data[i].update_date, "20px", "#000000", null);
@@ -1061,8 +1287,8 @@ export default {
         console.log(error);
         tr = document.createElement('tr');
         table.append(tr);
-        setTr(table, "#d7f4ff", "250px", "Repositories", "20px", "#000000", "https://github.com/QAQGaeBolg/histoire_analyzer");
-        setTr(table, "#d7f4ff", "75px", "Stars", "20px", "#000000", null);
+        setTr(table, "#d7f4ff", "375px", "Repositories", "20px", "#000000", "https://github.com/QAQGaeBolg/histoire_analyzer");
+        setTr(table, "#d7f4ff", "80px", "Stars", "20px", "#000000", null);
         setTr(table, "#d7f4ff", "75px", "Forks", "20px", "#000000", null);
         setTr(table, "#d7f4ff", "100px", "Date", "20px", "#000000", null);      
         setTr(table, "#d7f4ff", "100px", "Update", "20px", "#000000", null);  
