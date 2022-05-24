@@ -19,7 +19,7 @@ public class DataBaseController {
     private DataSource dataSource;
     private static final int BATCH_SIZE = 500;
     private int repoCnt = 0;
-    private Map<String ,Integer> frameworkMap;
+    public static Map<String ,Integer> frameworkMap;
 
     public DataBaseController() {
         Properties properties = new Properties();
@@ -35,6 +35,13 @@ public class DataBaseController {
         frameworkMap.put("Spark", 3);
         frameworkMap.put("GWT", 4);
         frameworkMap.put("DropWizard", 5);
+        frameworkMap.put("Blade", 6);
+        frameworkMap.put("Vaadin", 7);
+        frameworkMap.put("JHipster", 8);
+        frameworkMap.put( "Tapestry", 9);
+        frameworkMap.put("Wicket", 10);
+        frameworkMap.put( "Hibernate", 11);
+        frameworkMap.put( "MyBatis", 12);
     }
 
     public static void main(String[] args) throws ParseException {
